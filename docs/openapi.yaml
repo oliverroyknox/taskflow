@@ -1,0 +1,403 @@
+openapi: 3.0.0
+
+info:
+  title: Taskflow
+  description: An event based scheduling API.
+  version: 0.0.1
+  
+servers:
+  - url: http://localhost:8080
+    description: Local development server.
+    
+paths:
+  /schedule:
+    post:
+      tags:
+        - Schedule
+      summary: Creates a new schedule.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseSchedule'
+      responses:
+        '201':
+          description: Created a new schedule.
+        '400':
+          description: Missing information from request body.
+        '500':
+          description: Failed to create a new schedule in database.
+          
+  /schedules:
+    get:
+      tags:
+        - Schedule
+      summary: Gets a list of schedules.
+      responses:
+        '200':
+          description: Got schedules.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+        '500':
+          description: Failed to access schedules in database.
+  
+  /schedule/{scheduleId}:
+    get:
+      tags:
+        - Schedule
+      summary: Gets a schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+      responses:
+        '200':
+          description: Got schedule.
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Schedule'
+        '404':
+          description: No schedule with ID found.
+        '500':
+          description: Failed to access schedule in database.
+    put:
+      tags:
+        - Schedule
+      summary: Update a schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseSchedule'
+      responses:
+        '200':
+          description: Updated schedule.
+        '400':
+          description: Missing information from request body.
+        '404':
+          description: No schedule with ID found.
+        '500':
+          description: Failed to update schedule in database.
+          
+    delete:
+      tags:
+        - Schedule
+      summary: Delete a schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+      responses:
+        '204': 
+          description: Deleted schedule.
+        '404':
+          description: No schedule with ID found.
+        '500':
+          description: Failed to delete schedule in database.
+    
+  /schedule/{scheduleId}/event:
+    post:
+      tags:
+        - Event
+      summary: Create a new event in the schedule.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseEvent'
+      responses:
+        '201':
+          description: Created a new event.
+        '400':
+          description: Missing information from request body.
+        '500':
+          description: Failed to create a new event in the database.
+          
+  /schedule/{scheduleId}/events:
+    get:
+      tags:
+        - Event
+      summary: Gets a list of events in the schedule.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+      responses:
+        '200':
+          description: Got events.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          description: Failed to access events in database.
+          
+  /schedule/{scheduleId}/event/{eventId}:
+    get:
+      tags:
+        - Event
+      summary: Gets an event in the schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+      responses:
+        '200':
+          description: Got an event.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: No event with ID found.
+        '500':
+          description: Failed to access event in database.
+    
+    put:
+      tags:
+        - Event
+      summary: Update an event in the schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseEvent'
+      responses:
+        '200':
+          description: Updated event.
+        '400':
+          description: Missing information from request body.
+        '404':
+          description: No event with ID found.
+        '500':
+          description: Failed to update event in database.
+          
+    delete:
+      tags:
+        - Event
+      summary: Delete an event in the schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+      responses:
+        '204': 
+          description: Deleted event.
+        '404':
+          description: No event with ID found.
+        '500':
+          description: Failed to delete event in database.
+          
+  /schedule/{scheduleId}/event/{eventId}/handler:
+    post:
+      tags:
+        - Handler
+      summary: Create a new handler in an event.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseHandler'
+      responses:
+        '201':
+          description: Created a new handler.
+        '400':
+          description: Missing information from request body.
+        '500':
+          description: Failed to create a new handler in the database.
+          
+  /schedule/{scheduleId}/event/{eventId}/handlers:
+    get:
+      tags:
+        - Handler
+      summary: Gets a list of handlers in an event.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+      responses:
+        '200':
+          description: Got handlers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Handler'
+        '500':
+          description: Failed to access handlers in database.
+          
+  /schedule/{scheduleId}/event/{eventId}/handler/{handlerId}:
+    get:
+      tags:
+        - Handler
+      summary: Gets a handler in an event by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+        - $ref: '#/components/parameters/handlerId'
+      responses:
+        '200':
+          description: Got a handler.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Handler'
+        '404':
+          description: No handler with ID found.
+        '500':
+          description: Failed to access handler in database.
+    
+    put:
+      tags:
+        - Handler
+      summary: Update a handler in an event by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+        - $ref: '#/components/parameters/handlerId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseHandler'
+      responses:
+        '200':
+          description: Updated handler.
+        '400':
+          description: Missing information from request body.
+        '404':
+          description: No handler with ID found.
+        '500':
+          description: Failed to update handler in database.
+          
+    delete:
+      tags:
+        - Handler
+      summary: Delete a handler in an event by ID.
+      parameters:
+        - $ref: '#/components/parameters/scheduleId'
+        - $ref: '#/components/parameters/eventId'
+        - $ref: '#/components/parameters/handlerId'
+      responses:
+        '204': 
+          description: Deleted handler.
+        '404':
+          description: No handler with ID found.
+        '500':
+          description: Failed to delete handler in database.
+      
+components:
+  parameters:
+    scheduleId:
+      name: scheduleId
+      in: path
+      required: true
+      description: ID of schedule to target.
+      schema:
+        type: string
+        format: uuid
+        example: 'f78eeeb7-55bc-4908-8660-23a807a7d1d8'
+    eventId:
+      name: eventId
+      in: path
+      required: true
+      description: ID of event to target.
+      schema:
+        type: string
+        format: uuid
+        example: '03951df3-6618-4115-a844-ab504e1eb72a'
+    handlerId:
+      name: handlerId
+      in: path
+      required: true
+      description: ID of handler to target.
+      schema:
+        type: string
+        format: uuid
+        example: '891ef076-0062-480e-8d2c-aeb5a03d835c'
+
+  schemas:
+    BaseSchedule: 
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Morning Routine'
+    BaseEvent:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Brush my teeth'
+        beginsAt:
+          type: integer
+          example: 1645563012
+        lastsFor:
+          type: integer
+          example: 120000
+    BaseHandler:
+      type: object
+      properties:
+        on:
+          type: string
+          enum: ['begin', 'expire', 'delete']
+          example: 'begin'
+        create:
+          type: object
+          properties:
+            event:
+              $ref: '#/components/schemas/BaseEvent'
+    Schedule:
+      allOf:
+        - $ref: '#/components/schemas/BaseSchedule'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: 'f78eeeb7-55bc-4908-8660-23a807a7d1d8'
+            eventIds:
+              type: array
+              items:
+                type: string
+                format: uuid
+                example: '03951df3-6618-4115-a844-ab504e1eb72a'
+    Event:
+      allOf:
+        - $ref: '#/components/schemas/BaseEvent'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: '03951df3-6618-4115-a844-ab504e1eb72a'
+            handlerIds:
+              type: array
+              items:
+                type: string
+                format: uuid
+                example: '891ef076-0062-480e-8d2c-aeb5a03d835c'
+    Handler:
+      allOf:
+        - $ref: '#/components/schemas/BaseHandler'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: '891ef076-0062-480e-8d2c-aeb5a03d835c'

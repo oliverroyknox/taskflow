@@ -1,0 +1,41 @@
+{
+  "name": "com.oliverroyknox.taskflow",
+  "version": "0.0.1",
+  "description": "An event based scheduling API.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel index.js -d dist && babel app -d dist/app && babel config -d dist/config",
+    "start": "npm run build && node .",
+    "start:dev": "nodemon --exec babel-node -- index.js app config",
+    "test": "mocha --require @babel/register tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "www.github.com/oliverroyknox/taskflow"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "mongodb",
+    "rest-api"
+  ],
+  "author": "Oliver Knox",
+  "license": "GNU GPLv3",
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.5",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/register": "^7.17.0",
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "mocha": "^9.2.1",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
